@@ -1,0 +1,1 @@
+    			{ char* e = fgets(t,BSIZE,file);}
