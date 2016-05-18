@@ -350,7 +350,7 @@ static gchar** read_basis_from_a_nwchem_output_file(gchar *FileName, gint* nrs, 
 		fclose(fd);
   		return NULL;
 	}
-
+	fseek(fd, 0, SEEK_SET);
  	while(!feof(fd))
 	{
 		if(!fgets(t,BSIZE,fd))break;
@@ -361,11 +361,11 @@ static gchar** read_basis_from_a_nwchem_output_file(gchar *FileName, gint* nrs, 
 			OK = TRUE;
 			break;
 		}
-        }
+	}
 	if(!OK)
 	{
 		g_free(t);
-  		Message(_("Sorry I can read basis from your NWChem output file."),_("Error"),TRUE);
+		Message(_("Sorry I can not read basis from your NWChem output file."),_("Error"),TRUE);
   		return NULL;
 	}
 
@@ -513,8 +513,11 @@ static gboolean DefineNWChemBasisType(gchar** strbasis, gint nrows)
 		if(!this_is_a_backspace(strbasis[k]) &&!isdigit(t[0])) /* new atom */
 		{
 			newAtom = FALSE;
-                	t[0] = toupper(t[0]);
-                	if (2==strlen(t)) t[1]=tolower(t[1]);
+			for(int iter = strlen(t)-1;(iter>=0) && (isdigit(t[iter]));iter--)
+				t[strlen(t)-1] = '\0';
+
+			t[0] = toupper(t[0]);
+			if (2==strlen(t)) t[1]=tolower(t[1]);
 			i=get_num_type_from_symbol(t);
 			if(i<0)
 			{

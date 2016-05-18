@@ -3462,16 +3462,11 @@ gulong gl_read_nwchem_file_geomi(gchar *FileName,gint num)
 
 			sscanf(t,"%d %s %s %s %s %s",&idummy,AtomCoord[0],AtomCoord[4],AtomCoord[1],AtomCoord[2],AtomCoord[3]);
 
-			AtomCoord[0][0]=toupper(AtomCoord[0][0]);
-	 		l=strlen(AtomCoord[0]);
-          		if (l==2) 
-			{
-				AtomCoord[0][1]=tolower(AtomCoord[0][1]);
-				if(isdigit(AtomCoord[0][1]))l=1;
-			}
-			if(l==1)sprintf(t,"%c",AtomCoord[0][0]);
-		         else sprintf(t,"%c%c",AtomCoord[0][0],AtomCoord[0][1]);
+			for(int iter = strlen(AtomCoord[0]) - 1;iter >= 0 && isdigit(AtomCoord[0][iter]); iter--)
+        AtomCoord[0][iter] = '\0';
 
+			AtomCoord[0][0]=toupper(AtomCoord[0][0]);
+			strcpy(t, AtomCoord[0]);
 			/* HERE 
     			GeomOrb[j].Symb=get_symbol_using_z((int)(atof(AtomCoord[4])+0.5));
 			*/
